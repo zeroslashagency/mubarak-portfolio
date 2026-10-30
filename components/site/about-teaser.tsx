@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   motion,
   useMotionValue,
@@ -50,21 +50,84 @@ const mob: Mob[] = [
 
 const card = "absolute left-0 top-0 overflow-hidden border border-neutral-300 bg-neutral-200 shadow-[0_3px_8px_rgba(0,0,0,0.25)] will-change-transform";
 
-function Fill({ src }: { src?: string }) {
-  return src ? <img src={src} alt="" loading="lazy" className="h-full w-full object-cover object-[60%_center]" /> : null;
+// Temporary looping art for cards without a photo. SMIL keeps it off the JS thread.
+const ink = "#a3a3a3";
+const dot = "#16a34a";
+
+function Loop({ v, still }: { v: number; still: boolean }) {
+  const a = (el: ReactNode) => (still ? null : el);
+  const art = [
+    <g key="orbit">
+      <circle cx="50" cy="65" r="26" fill="none" stroke={ink} strokeWidth="1.5" strokeDasharray="3 4" />
+      <circle cx="50" cy="65" r="6" fill={ink} />
+      <circle cx="76" cy="65" r="4" fill={dot}>
+        {a(<animateTransform attributeName="transform" type="rotate" from="0 50 65" to="360 50 65" dur="6s" repeatCount="indefinite" />)}
+      </circle>
+    </g>,
+    <g key="wave" fill="none" stroke={ink} strokeWidth="2" strokeLinecap="round">
+      {[50, 65, 80].map((y, i) => (
+        <path key={y} d={`M10 ${y} q10 -12 20 0 t20 0 t20 0 t20 0`} strokeDasharray="8 6" opacity={1 - i * 0.25}>
+          {a(<animate attributeName="stroke-dashoffset" from="0" to="-28" dur={`${1.6 + i * 0.6}s`} repeatCount="indefinite" />)}
+        </path>
+      ))}
+    </g>,
+    <g key="nodes">
+      <path d="M25 40 L75 55 L35 95 Z M75 55 L70 100" fill="none" stroke={ink} strokeWidth="1.5" />
+      {[[25, 40], [75, 55], [35, 95], [70, 100]].map(([x, y], i) => (
+        <circle key={i} cx={x} cy={y} r="4" fill={i === 1 ? dot : ink}>
+          {a(<animate attributeName="r" values="3;6;3" dur="2.4s" begin={`${i * 0.6}s`} repeatCount="indefinite" />)}
+        </circle>
+      ))}
+    </g>,
+    <g key="code">
+      {[[18, 40, 46], [26, 52, 40], [26, 64, 30], [18, 76, 36]].map(([x, y, w], i) => (
+        <rect key={i} x={x} y={y} width={w} height="5" rx="2.5" fill={ink} />
+      ))}
+      <rect x="58" y="74" width="3" height="9" fill={dot}>
+        {a(<animate attributeName="opacity" values="1;1;0;0" dur="1s" repeatCount="indefinite" />)}
+      </rect>
+    </g>,
+    <g key="bars">
+      {[0, 1, 2, 3, 4].map((i) => (
+        <rect key={i} x={20 + i * 13} y="45" width="8" height="40" rx="3" fill={i === 2 ? dot : ink}>
+          {a(<animate attributeName="height" values="12;40;20;34;12" dur="1.8s" begin={`${i * 0.25}s`} repeatCount="indefinite" />)}
+          {a(<animate attributeName="y" values="73;45;65;51;73" dur="1.8s" begin={`${i * 0.25}s`} repeatCount="indefinite" />)}
+        </rect>
+      ))}
+    </g>,
+    <g key="gear" fill="none" stroke={ink} strokeWidth="6">
+      <circle cx="50" cy="65" r="18" strokeDasharray="7 5">
+        {a(<animateTransform attributeName="transform" type="rotate" from="0 50 65" to="360 50 65" dur="8s" repeatCount="indefinite" />)}
+      </circle>
+      <circle cx="50" cy="65" r="5" fill={dot} stroke="none" />
+    </g>,
+  ];
+  return (
+    <svg viewBox="0 0 100 130" preserveAspectRatio="xMidYMid meet" className="h-full w-full">
+      {art[v % art.length]}
+    </svg>
+  );
 }
 
-function DeskCard({ c, z, p }: { c: Desk; z: number; p: MotionValue<number> }) {
+function Fill({ src, v, still }: { src?: string; v: number; still: boolean }) {
+  return src ? (
+    <img src={src} alt="" loading="lazy" className="h-full w-full object-cover object-[60%_center]" />
+  ) : (
+    <Loop v={v} still={still} />
+  );
+}
+
+function DeskCard({ c, z, p, still }: { c: Desk; z: number; p: MotionValue<number>; still: boolean }) {
   const x = useTransform(p, [0, 1], [c.stack.x, c.spread.x]);
   const y = useTransform(p, [0, 1], [c.stack.y, c.spread.y]);
   return (
     <motion.div aria-hidden className={`${card} rounded-xl`} style={{ width: c.w, height: c.h, x, y, rotate: c.r, zIndex: z }}>
-      <Fill src={c.src} />
+      <Fill src={c.src} v={z} still={still} />
     </motion.div>
   );
 }
 
-function MobCard({ c, z, p }: { c: Mob; z: number; p: MotionValue<number> }) {
+function MobCard({ c, z, p, still }: { c: Mob; z: number; p: MotionValue<number>; still: boolean }) {
   const x = useTransform(p, [0, 1], [c.stack.x, c.spread.x]);
   const y = useTransform(p, [0, 1], [c.stack.y, c.spread.y]);
   const width = useTransform(p, [0, 1], c.w);
@@ -72,7 +135,7 @@ function MobCard({ c, z, p }: { c: Mob; z: number; p: MotionValue<number> }) {
   const rotate = useTransform(p, [0, 1], c.r);
   return (
     <motion.div aria-hidden className={`${card} rounded-lg`} style={{ width, height, x, y, rotate, zIndex: z }}>
-      <Fill src={c.src} />
+      <Fill src={c.src} v={z} still={still} />
     </motion.div>
   );
 }
@@ -140,7 +203,7 @@ function Desktop({ still }: { still: boolean }) {
             <Copy />
           </motion.div>
           {desk.map((c, i) => (
-            <DeskCard key={i} c={c} z={i + 1} p={p} />
+            <DeskCard key={i} c={c} z={i + 1} p={p} still={still} />
           ))}
         </div>
       </div>
@@ -179,7 +242,7 @@ function Mobile({ still }: { still: boolean }) {
           <Copy small />
         </motion.div>
         {mob.map((c, i) => (
-          <MobCard key={i} c={c} z={i + 1} p={p} />
+          <MobCard key={i} c={c} z={i + 1} p={p} still={still} />
         ))}
       </div>
     </div>
