@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* shadcn tokens, still used by /story, /machine-monitor, /animations, /hover-example */
+    --background: 60 14% 98%;
+    --foreground: 60 9% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 60 9% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 60 9% 10%;
+    --primary: 60 9% 10%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 60 9% 96%;
+    --secondary-foreground: 60 9% 10%;
+    --muted: 60 9% 96%;
+    --muted-foreground: 60 1% 40%;
+    --accent: 60 6% 93%;
+    --accent-foreground: 60 9% 10%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 60 2% 88%;
+    --input: 60 2% 88%;
+    --ring: 60 9% 10%;
+    --radius: 0.5rem;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-neutral-50 font-sans text-neutral-750 antialiased;
+  }
+
+  ::selection {
+    @apply bg-neutral-900 text-white;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-neutral-900 ring-offset-2 ring-offset-neutral-50;
+  }
+}
+
+@layer components {
+  .label {
+    @apply font-mono text-[0.75rem] uppercase leading-none tracking-[0.01em] text-neutral-500;
+  }
+
+  .pill {
+    @apply inline-flex items-center rounded-full border border-neutral-200 bg-white px-2.5 py-1 font-mono text-[0.6875rem] uppercase tracking-[0.01em] text-neutral-600;
+  }
+
+  .grid-faint {
+    background-image:
+      linear-gradient(to right, theme(colors.neutral.150) 1px, transparent 1px),
+      linear-gradient(to bottom, theme(colors.neutral.150) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes jiggle {
+  0%, 100% { transform: rotate(0); }
+  33% { transform: rotate(-6deg); }
+  66% { transform: rotate(6deg); }
+}
+
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+
+.jiggle:hover { animation: jiggle 0.35s ease-in-out; }
+.marquee { animation: marquee 40s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .jiggle:hover, .marquee { animation: none; }
+}

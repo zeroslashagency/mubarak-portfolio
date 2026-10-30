@@ -1,0 +1,36 @@
+<DesignBoard>
+<Section title="Entry and opening">
+<Artboard id="entry" label="Home: about section with the new entry" surface="browser" x={0} y={0}>
+<Screen html="<div style='display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;height:100%;box-sizing:border-box;background:var(--wf-paper)'><div style='display:flex;gap:10px'><div class='wf-box' style='width:70px;height:90px'></div><div class='wf-box' style='width:90px;height:115px;background:var(--wf-accent-soft)'></div><div class='wf-box' style='width:70px;height:90px'></div></div><h2>Based in Chennai, looking for the answer hiding in the data.</h2><p class='wf-muted'>I studied electronics and communication, then moved into machine learning.</p><div style='display:flex;gap:10px'><button>Know more</button><button class='primary'>Watch my story</button></div></div>" />
+<Annotation targetId="entry" placement="right">New second button next to Know more. It opens /me, the cinematic version. The current minimal section stays as it is.</Annotation>
+</Artboard>
+<Artboard id="open" label="/me cold open" surface="browser" x={1200} y={0}>
+<Screen html="<div style='display:flex;flex-direction:column;height:100%;background:var(--wf-ink)'><div style='height:44px;background:var(--wf-ink);border-bottom:1.4px solid var(--wf-line)'></div><div style='flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px'><small style='color:var(--wf-paper);letter-spacing:4px'>A FILM BY MUBARAK A</small><h1 style='color:var(--wf-paper)'>The answer hiding in the data</h1><p style='color:var(--wf-muted)'>Click anywhere to begin</p></div><div style='display:flex;align-items:center;gap:10px;padding:12px 18px;color:var(--wf-muted);border-top:1.4px solid var(--wf-line)'><small>Esc to leave</small><div style='flex:1'></div><small>Sound off</small></div></div>" />
+<Annotation targetId="open" placement="bottom">Full-screen black with letterbox bars top and bottom. Nothing plays until the first click, so audio (if any) is allowed by the browser.</Annotation>
+</Artboard>
+</Section>
+<Section title="One scene, three beats">
+<Artboard id="title-card" label="Beat 1: chapter title card" surface="browser" x={0} y={900}>
+<Screen html="<div style='display:flex;flex-direction:column;height:100%;background:var(--wf-ink)'><div style='height:44px'></div><div style='flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px'><small style='color:var(--wf-muted);letter-spacing:4px'>CHAPTER 01</small><h1 style='color:var(--wf-paper)'>Chennai, childhood</h1></div><div style='height:44px'></div></div>" />
+<Annotation targetId="title-card" placement="bottom">Fades in from black, holds about 1.5 s, then dissolves into the scene.</Annotation>
+</Artboard>
+<Artboard id="scene" label="Beat 2: scene with line typing in" surface="browser" x={1200} y={900}>
+<Screen html="<div style='display:flex;flex-direction:column;height:100%;background:var(--wf-ink)'><div style='height:44px'></div><div style='flex:1;position:relative;display:flex;align-items:flex-end;justify-content:center;padding:28px;background:var(--wf-muted)'><div style='display:flex;flex-direction:column;align-items:center;gap:6px'><p style='color:var(--wf-paper)'>I was the kid who opened the TV remote to see wh|</p></div></div><div style='display:flex;align-items:center;gap:10px;padding:12px 18px;color:var(--wf-muted)'><small>01 / 07</small><div style='flex:1'></div><small>Click for next</small></div></div>" />
+<Annotation targetId="scene" placement="bottom">Photo fills the frame with a slow zoom. The subtitle line types in one character at a time. A click while typing finishes the line; the next click moves on.</Annotation>
+</Artboard>
+<Artboard id="cut" label="Beat 3: cut to next chapter" surface="browser" x={2400} y={900}>
+<Screen html="<div style='display:flex;flex-direction:column;height:100%;background:var(--wf-ink)'><div style='height:44px'></div><div style='flex:1;display:flex;align-items:center;justify-content:center'><small style='color:var(--wf-muted);letter-spacing:4px'>CHAPTER 02</small></div><div style='height:44px'></div></div>" />
+<Annotation targetId="cut" placement="bottom">Dip to black between chapters. Back arrow or left key returns to the previous scene.</Annotation>
+</Artboard>
+</Section>
+<Section title="Ending and mobile">
+<Artboard id="credits" label="End credits" surface="browser" x={0} y={1800}>
+<Screen html="<div style='display:flex;flex-direction:column;height:100%;background:var(--wf-ink)'><div style='height:44px'></div><div style='flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px'><small style='color:var(--wf-muted);letter-spacing:4px'>TO BE CONTINUED</small><h2 style='color:var(--wf-paper)'>Building something with data or AI? Let us talk.</h2><div style='display:flex;gap:10px'><button class='primary'>Say hello</button><button>See the work</button><button>Watch again</button></div><small style='color:var(--wf-muted)'>Resume · LinkedIn · GitHub</small></div><div style='height:44px'></div></div>" />
+<Annotation targetId="credits" placement="right">The last screen ends on what a visitor can do next: contact, projects, or replay.</Annotation>
+</Artboard>
+<Artboard id="mobile" label="Mobile scene" surface="mobile" x={1200} y={1800}>
+<Screen html="<div style='display:flex;flex-direction:column;height:100%;background:var(--wf-ink)'><div style='height:36px'></div><div style='flex:1;display:flex;align-items:flex-end;padding:18px;background:var(--wf-muted)'><p style='color:var(--wf-paper)'>Then a diploma in electronics, and soldering my first circ|</p></div><div style='display:flex;align-items:center;padding:12px 16px;color:var(--wf-muted)'><small>03 / 07</small><div style='flex:1'></div><small>Tap</small></div></div>" />
+<Annotation targetId="mobile" placement="right">Same story, portrait crop. Tap advances, swipe right goes back.</Annotation>
+</Artboard>
+</Section>
+</DesignBoard>

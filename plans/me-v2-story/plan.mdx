@@ -1,0 +1,106 @@
+---
+title: "About v2: /me, a click-through film of Mubarak's story"
+brief: "A cinematic prototype page at /me that tells Mubarak's story from childhood to now as seven click-to-advance scenes with chapter cards, photos and typed subtitles. Storyline draft plus the questions needed to fill it with real memories."
+kind: "plan"
+localOnly: true
+---
+
+# About v2: /me, a click-through film
+
+A new prototype page at `/me` that plays Mubarak's story like a short film. A visitor clicks "Watch my story" in the home about section. The screen goes black with letterbox bars, then each click moves to the next scene: a chapter title card, a full-bleed photo with a slow zoom, and one subtitle line that types in character by character. Seven chapters run from childhood in Chennai to the ML work today, and the film ends on credits with contact and project links. The current minimal about section and `/about` page stay unchanged; `/me` is a parallel version to try out.
+
+The canvas above shows the entry button, the cold open, the three beats of one scene, the credits and the mobile layout. The storyline below is a draft. Lines marked *[needs your memory]* cannot be written without you, and the questions at the bottom gather them.
+
+## Objective
+
+Done means: `/me` exists in the static export, plays all seven chapters by click, tap or arrow keys, works on mobile and desktop, respects reduced motion, and every line in the film is true and in Mubarak's own words. No invented achievements or numbers.
+
+## Storyline draft
+
+Facts already known come from `lib/content.ts` (education, experience, projects) and the older `components/story-section.tsx`. Everything else is a placeholder until answered.
+
+<Table id="storyline" columns={["#", "Chapter", "Photo", "Subtitle lines (draft)"]} rows={[
+  ["00", "Cold open", "Black", "A film by Mubarak A. / The answer hiding in the data."],
+  ["01", "Chennai, childhood", "Childhood photo [needs your photo]", "I grew up in Chennai. [needs your memory: the first thing you took apart, broke, or got obsessed with]"],
+  ["02", "The first program", "School days, St Joseph's", "At St Joseph's I picked computer science. The first program I wrote was [needs your memory]."],
+  ["03", "Wires and solder", "Polytechnic lab or a circuit you built", "I wanted to know what runs under the code, so I did a diploma in electronics at Dr M G R Polytechnic, Arani."],
+  ["04", "Engineering", "College, Anna University Arani", "A degree in electronics and communication. I wired sensors to code and built an IoT health monitor. That is where the data got interesting."],
+  ["05", "First real work", "Workspace or desk photo", "Data science intern at Shiash Info Solutions, Chennai, Nov 2023. Web design intern at Kshitiksha Foundation, Apr 2024."],
+  ["06", "Now", "The new portrait (profile.jpg)", "Now I build models for vision, recommendations and prediction, and the apps around them."],
+  ["07", "Credits", "Black", "To be continued. Building something with data or AI? Let us talk."]
+]} />
+
+<Callout id="tone" tone="decision">
+
+Each chapter gets one or two short lines, at most about 120 characters each. Short lines keep the typing effect readable and the whole film around 60 to 90 seconds of clicking. Chapter 01 is the emotional hook, so it needs a specific, real memory; a generic "I was always curious" line would sound like every other portfolio.
+
+</Callout>
+
+## How it plays
+
+- **Click or tap, Space, right arrow:** if the line is still typing, finish it; otherwise go to the next beat.
+- **Left arrow or swipe right:** previous scene. **Esc:** back to home.
+- **Beats per chapter:** title card (fades in, holds about 1.5 s) → scene (photo with slow zoom, line types at about 35 ms per character) → dip to black.
+- **Progress:** a small `01 / 07` counter bottom left, "Click for next" bottom right.
+- **Reduced motion:** no zoom and no typing; lines appear whole and scenes crossfade.
+- **Sound:** off by default. Optional soft ambient track and key tick, toggled from the bottom bar (see Open Questions).
+
+## Implementation
+
+Reuse: framer-motion (already a dependency) for `AnimatePresence` crossfades and the zoom, `asset()` and `profile` from `lib/content.ts`, the `Link` pattern and `useReducedMotion` already used in `components/site/about-teaser.tsx`. New: one route, one client component, one data array, and the photos.
+
+<FileTree id="files" title="Files touched" entries={[
+  { path: "app/me/page.tsx", change: "added", note: "Server page with metadata; renders <StoryFilm />." },
+  { path: "components/site/story-film.tsx", change: "added", note: "Client component: scene index, beat state, typewriter, keyboard/tap/swipe input, letterbox layout." },
+  { path: "lib/content.ts", change: "modified", note: "Adds a `story` array of chapters { label, title, photo?, lines[] }." },
+  { path: "components/site/about-teaser.tsx", change: "modified", note: "Adds the 'Watch my story' button next to Know more in Copy." },
+  { path: "public/story/", change: "added", note: "One photo per chapter, compressed to under about 200KB each." }
+]} />
+
+<Code id="data-shape" filename="lib/content.ts" language="ts" caption="Planned data shape; components only render it, matching the file's existing rule." code={"export type Chapter = {\n  label: string; // \"Chapter 01\"\n  title: string; // \"Chennai, childhood\"\n  photo?: string; // \"/story/01-childhood.jpg\"; black frame when missing\n  lines: string[]; // 1-2 subtitle lines, typed in order\n};\n\nexport const story: Chapter[] = [/* filled from your answers */];\n"} />
+
+<Callout id="old-story" tone="info">
+
+An older `app/story` route with `components/story-section.tsx` already exists, built in a different style (shadcn buttons, gradients). It is left untouched. `/me` does not import from it.
+
+</Callout>
+
+## Steps
+
+<Checklist id="steps" items={[
+  { id: "s1", label: "Collect answers and photos from the questions below; write the final lines into `story` in lib/content.ts" },
+  { id: "s2", label: "Build components/site/story-film.tsx with the beat machine, typewriter and input handling" },
+  { id: "s3", label: "Add app/me/page.tsx and the 'Watch my story' entry button" },
+  { id: "s4", label: "Compress photos into public/story/ (sips, JPEG about 80 quality)" },
+  { id: "s5", label: "Verify: tsc, lint, build; play the film end to end at 1440 and 390 widths in a real browser, plus reduced-motion and keyboard-only runs" }
+]} />
+
+## Verification
+
+Run `npm run build` and serve `out/` on port 4173. Open `/me`, click through all seven chapters with the mouse, then again with arrow keys only, then at a 390px width with taps. Confirm that a click mid-typing completes the line, that Esc returns home, that reduced motion shows whole lines without zoom, and that no photo is cropped through a face at either width.
+
+### Open Questions
+
+<QuestionForm id="questions" questions={[
+  { id: "q-childhood", title: "Chapter 01: what is one real childhood memory to open with?", subtitle: "Something specific: the first thing you took apart, a game you were hooked on, a family moment, where in Chennai you grew up.", mode: "freeform", placeholder: "e.g. I opened my dad's radio at 9 and could not put it back together..." },
+  { id: "q-first-code", title: "Chapter 02: what was your first program or first computer moment?", mode: "freeform", placeholder: "Language, what it did, how old you were..." },
+  { id: "q-turning", title: "Why did you move from electronics into ML and data? Was there one moment?", mode: "freeform", placeholder: "A project, a person, a video, a failure..." },
+  { id: "q-dates", title: "Your school and diploma are both listed as 2017 to 2019 in the site content. Which dates are correct?", mode: "freeform", placeholder: "School: ____ to ____, Diploma: ____ to ____" },
+  { id: "q-photos", title: "Photos: what do you have for each chapter?", mode: "single", options: [
+    { id: "real", label: "I will send real photos", detail: "Childhood, school, college, work. Best result.", recommended: true },
+    { id: "mix", label: "Some photos, placeholders for the rest", detail: "Gray frames until photos arrive, like the scatter section." },
+    { id: "none", label: "No photos, text and black frames only", detail: "Pure title-card film, more like movie credits." }
+  ] },
+  { id: "q-sound", title: "Sound?", mode: "single", options: [
+    { id: "off", label: "No sound", detail: "Lightest and simplest.", recommended: true },
+    { id: "toggle", label: "Ambient track and key tick, off by default", detail: "Toggle in the bottom bar; adds about 300KB of audio." }
+  ] },
+  { id: "q-language", title: "Subtitle language?", mode: "single", options: [
+    { id: "en", label: "English", recommended: true },
+    { id: "en-ta", label: "English with a Tamil line in the childhood chapter", detail: "A personal touch for the opening." }
+  ] },
+  { id: "q-entry", title: "Where should the entry live?", mode: "single", options: [
+    { id: "button", label: "'Watch my story' button in the home about section", detail: "As shown on the canvas.", recommended: true },
+    { id: "nav", label: "Also a 'Me' link in the top nav" }
+  ] }
+]} submitLabel="Send answers" />
